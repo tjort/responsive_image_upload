@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<extension id="responsive_image_upload" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
+
+	<name>Field: Responsive Image Upload</name>
+
+	<description>A specialized filed for uploading images with min width/height, maximum width/height restrictions and</description>
+
+	<!-- <repo type="github">https://github.com/vlad-ghita/image_upload</repo>
+
+	<url type="discuss">http://symphony-cms.com/discuss/thread/80543/</url>
+ -->
+	<types>
+		<type>Field Types</type>
+		<type>Image</type>
+		<type>Upload</type>
+	</types>
+
+	<authors>
+		<author>
+			<name github="tjort">Jordi Verdult</name>
+			<email>jordi@verdultworks.nl</email>
+			<website>http://www.verdultworks.nl</website>
+		</author>
+	</authors>
+
+	<dependencies>
+		<dependency version="1.15">https://github.com/symphonycms/jit_image_manipulation</dependency>
+	</dependencies>
+
+	<releases>
+		<release version="1.0" date="2015-04-29" min="2.0"/>
+	</releases>
+
+</extension>
