@@ -83,7 +83,11 @@
 					foreach ($responsive_sizes_array as $key => $value) {
 						$value = (int)$value;
 							if ($value > 0) {
-								$filename = $image_path_parts['filename']. '-res' . $value . '.' . $image_path_parts['extension'];
+								$filename = 'riu-res-' . $value . '_' . $image_path_parts['filename'] . $image_path_parts['extension'];
+
+								// if (is_array($data) || !file_exists($image_path_parts['dirname'] . '/' . $this->constructResFilename($image_path_parts['filename'], $value) . '.' . $image_path_parts['extension'])) {
+								// 	self::resize( $file, $value, 0, $result['mimetype'], $image_path_parts['dirname'] . '/' . $this->constructResFilename($image_path_parts['filename'], $value) . '.' . $image_path_parts['extension']);
+								// }
 								$emt->appendChild(new XMLElement('filename-res' . $value, $filename));
 						}
 					}
@@ -267,9 +271,15 @@
 		/*------------------------------------------------------------------------------------------------*/
 
 		public function checkPostFieldData($data, &$message, $entry_id = null){
+
+
 			if( is_array( $data ) && isset($data['name']) && ($this->get( 'unique' ) == 'yes') ){
 				$data['name'] = $this->getUniqueFilename( $data['name'] );
 			}
+
+			if( is_array( $data ) && isset($data['name'])) {
+				$data['name'] = 'riu-orig_' . $data['name'];
+			} 
 
 			// run basic upload check
 			$error = parent::checkPostFieldData( $data, $message, $entry_id );
@@ -354,8 +364,14 @@
 		public function processRawFieldData($data, &$status, &$message, $simulate = false, $entry_id = null){
 			// if( !is_array( $data ) || is_null( $data ) ) return parent::processRawFieldData( $data, $status, $message, $simulate, $entry_id );
 
+
+
 			if( is_array( $data ) && isset($data['name']) && ($this->get( 'unique' ) == 'yes') ){
 				$data['name'] = $this->getUniqueFilename( $data['name'] );
+			}
+
+			if( is_array( $data ) && isset($data['name'])) {
+				$data['name'] = 'riu-orig_' . $data['name']; 
 			}
 
 			// file already exists in Symphony
@@ -363,7 +379,9 @@
 				// 1. process Upload
 				$result = parent::processRawFieldData( $data, $status, $message, $simulate, $entry_id );
 
+				
 
+				
 				// Find Mime if it was not submitted
 				if( $result['mimetype'] === 'application/octet-stream' ){
 					if( function_exists( 'finfo_file' ) ){
@@ -429,8 +447,8 @@
 				foreach ($responsive_sizes_array as $key => $value) {
 					$value = (int)$value;
 					if ($value > 0) {
-						if (is_array($data) || !file_exists($image_path_parts['dirname'] . '/' . $image_path_parts['filename']. '-res' . $value . '.' . $image_path_parts['extension'])) {
-							self::resize( $file, $value, 0, $result['mimetype'], $image_path_parts['dirname'] . '/' . $image_path_parts['filename']. '-res' . $value . '.' . $image_path_parts['extension']);
+						if (is_array($data) || !file_exists($image_path_parts['dirname'] . '/' . $this->constructResFilename($image_path_parts['filename'], $value) . '.' . $image_path_parts['extension'])) {
+							self::resize( $file, $value, 0, $result['mimetype'], $image_path_parts['dirname'] . '/' . $this->constructResFilename($image_path_parts['filename'], $value) . '.' . $image_path_parts['extension']);
 						}
 					}
 				}
@@ -438,6 +456,10 @@
 			}
 
 			return $result;
+		}
+
+		public function constructResFilename($filename, $width) {
+			return str_replace("riu-orig_", "riu-res-" . $width . '_', $filename);
 		}
 
 		public function displayPublishPanel(XMLElement &$wrapper, $data = null, $flagWithError = null, $fieldnamePrefix = null, $fieldnamePostfix = null, $entry_id = null){
